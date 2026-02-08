@@ -8,7 +8,7 @@
 // -----------------------------
 
 const CONFIG = {
-    fpsTarget: 60,
+    fpsTarget: 360,
     debug: true,
     shrekMode: true,
     swampFog: true,
@@ -25,7 +25,7 @@ const STATE = {
     width: window.innerWidth,
     height: window.innerHeight,
     frame: 0,
-    mouse: { x: 0, y: 0 },
+    mouse: { x: window.innerWidth / 2, y: window.innerHeight / 2 },
     fps: 0,
     time: Date.now(),
     ogreMood: "happy"
@@ -121,8 +121,8 @@ const Performance = {
 // -----------------------------
 
 const Shrek = {
-    x: 0,
-    y: 0,
+    x: STATE.width / 2,
+    y: STATE.height / 2,
     scale: 1,
     bounce: 0,
 
@@ -250,15 +250,28 @@ function playShrekQuote() {
     speechSynthesis.speak(msg);
 }
 
-window.addEventListener("click", playShrekQuote);
-
 // -----------------------------
-// MOUSE TRACKING
+// INPUT HANDLING (DESKTOP + MOBILE)
 // -----------------------------
 
+function updateMousePosition(x, y) {
+    STATE.mouse.x = x;
+    STATE.mouse.y = y;
+}
+
+// Mouse
 window.addEventListener("mousemove", e => {
-    STATE.mouse.x = e.clientX;
-    STATE.mouse.y = e.clientY;
+    updateMousePosition(e.clientX, e.clientY);
+});
+
+// Click / Tap
+window.addEventListener("click", playShrekQuote);
+window.addEventListener("touchstart", playShrekQuote);
+
+// Touch
+window.addEventListener("touchmove", e => {
+    const touch = e.touches[0];
+    if (touch) updateMousePosition(touch.clientX, touch.clientY);
 });
 
 // -----------------------------
